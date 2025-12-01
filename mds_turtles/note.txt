@@ -1,0 +1,4 @@
+11/18/25
+Manually renamed stimulus identification column from "which" to "stim" in .csv files
+Also moved it to be first column in the data file
+This is not the case in the original scaling study. Minor change but just documenting it.
