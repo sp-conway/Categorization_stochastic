@@ -1,14 +1,15 @@
 
 beta_correction_binomial <- function(n,p1,p0){
   if(any(c(p1,p0)==0)){
-    return(0)
+    corr <- 0
   }else if(p1==p0){
-    return(0)
+    corr <- 0
   }else{
     x <- -n * ( (p1*(1-p1))/(p0*(1-p0)) ) * log( sqrt((p1*(1-p1)) ) / sqrt((p0*(1-p0))) )
     y <- ( (p1*(1-p1))^2 - (p0*(1-p0))^2 ) / ( ( ( (2*p0)*(1-p0) )^2)/n)
-    return(x+y)
+    corr <- 0#x+y
   }
+  return(corr)
 }
 
 # kl_binomial <- function(n,p1,p0){ # sampling distribution
@@ -41,13 +42,8 @@ kl_binomial <- function(n,p1,p0){ # sampling distribution
   # if(is.nan(z)){ # temporary bug fix
   #   kl <- 0
   # }else{
-  if(z <= xmin){
-      c <- xmax-z
-      if(c > xmin & c < xmax){
-        kl <- exp(c)*exp(z-c)
-      }else{
-        kl <- 0
-      }
+  if(z < log(.Machine$double.xmin)){
+      kl <- 0
     }else{
       kl <- exp(z)
   }

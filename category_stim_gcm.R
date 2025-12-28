@@ -11,16 +11,17 @@ source(here("gcm_functions.R"))
 
 # read in stimuli
 mds_cat <- here("mds_turtles_categories_25_11/mds_orig_turtles_cat.csv") %>%
-  read_csv()
+  read_csv() #%>%
+  #filter(category %in% c("A","B") | (stim==1 | stim==25)) # only 1 and 25 from untrained
 
 # modeling dir
 mdir <- here("mds_turtles_gcm_kl")
 dir_create(mdir)
 # set params ================================================================================
-save_par <- T
-c <- .075
-w <- .5
-gamma <- 1
+save_par <- F
+c <- .1
+w <- .525
+gamma <- 1.75
 b_A <- .5
 r <- 1
 params <- c("c"=c,"w"=w,"gamma"=gamma,"b_A"=b_A)
@@ -32,7 +33,6 @@ if(save_par){
 get_exemplars <- function(mds,label){
   exemplars_1 <- mds_cat %>%
     filter(category==label) 
-  
   exemplars_2 <- exemplars_1 %>%
     select(angle_psy,radius_psy) %>%
     as.matrix()
@@ -76,8 +76,7 @@ p_mds_cat <-  mds_cat %>%
   labs(x="angle",y="radius")+
   coord_fixed(xlim=c(-50,50),ylim=c(-50,50))+
   ggthemes::theme_few()+
-  theme(plot.title=element_text(hjust=0.5),
-        legend.position="none")+
+  theme(plot.title=element_text(hjust=0.5))+
   guides(colour=guide_legend(override.aes=list(alpha=1)))
 cat_preds <- preds %>%
   ggplot(aes(reorder(stim,-p_A),p_A,fill=category))+
@@ -85,13 +84,21 @@ cat_preds <- preds %>%
   geom_text(aes(label=stim,y=p_A+.025))+
   geom_hline(yintercept=.5,linetype="dashed",alpha=.5)+
   labs(x="stimulus",y="p(A)")+
-  scale_y_continuous(limits=c(0,1))+
+  scale_y_continuous(limits=c(0,1.1),breaks=c(0,.5,1))+
   ggsci::scale_fill_futurama()+
   ggthemes::theme_few()+
   theme(legend.position=c(.8,.8))
-p_both <- p_mds_cat|cat_preds
+p_both <- (p_mds_cat+theme(legend.position="none"))|cat_preds
 p_both
 ggsave(p_mds_cat,filename=here("mds_turtles_categories_25_11/mds_turtle_cat_plot.jpeg"),
        width=4,height=4)
 ggsave(p_both,filename=here("mds_turtles_categories_25_11/mds_turtle_cat_plot_gcm.jpeg"),
        width=12,height=4)
+
+# KL ======================================================================
+all_stim <- rbind(A_exemplars, B_exemplars, test_stim)
+params_0 <- c("gamma"=1, "c"=.1, "w"=.5, "b_A"=.5)
+params_1 <- c("gamma"=1.75, "c"=.1, "w"=.525, "b_A"=.5)
+source(here("kl_functions.R"))
+gcm_kl(N=4, all_stim, 1, A_exemplars, B_exemplars, params_0, params_0)
+gcm_kl(N=4, all_stim, 1, A_exemplars, B_exemplars, params_0, params_1)

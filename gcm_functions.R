@@ -5,46 +5,26 @@ similarity <- function(c, w, stim_1, stim_2, r=1){
   s <- exp(-c*d)
   return(s)
 } 
-gcm_predict <- function(test, params, r, A_exemplars, B_exemplars, return_SS=F){
+gcm_predict <- function(test, params, r, A_exemplars, B_exemplars){
   n_exemplars <- nrow(A_exemplars)
   stopifnot(nrow(A_exemplars)==nrow(B_exemplars))
-  # grab params
-  if(is.na(params["c"])){
-    c <- 1
-  }else{
-    c <- params["c"]
-  }
-  if(is.na(params["b_A"])){
-    b_A <- .5
-  }else{
-    b_A <- params["b_A"]
-  }
-  if(is.na(params["gamma"])){
-    gamma <- 1
-  }else{
-    gamma <- params["gamma"]
-  }
-  if(is.na(params["w"])){
-    w <- .5
-  }else{
-    w <- params["w"]
-  }
   
-  # similarities
-  sim_A <- sim_B <- numeric(n_exemplars)
-  for(i in 1:n_exemplars){
-    sim_A[i] <- similarity(c, w, test, A_exemplars[i,], r)
-    sim_B[i] <- similarity(c, w, test, B_exemplars[i,], r)
-  }
+  # grab params
+  c <- ifelse(is.na(params["c"]),1,params["c"])
+  b_A <- ifelse(is.na(params["b_A"]), 0.5, params["b_A"])
+  gamma <- ifelse(is.na(params["gamma"]),1,params["gamma"])
+  w <- ifelse(is.na(params["w"]), 0.5, params["w"])
+  
   # sum similarities
-  ss_A <- sum(sim_A)
-  ss_B <- sum(sim_B)
-  if(return_SS){
-    return(c("A"=ss_A,"B"=ss_B))
-  }else{
-    p_A <- (ss_A^gamma)*b_A / ( (ss_A^gamma)*b_A + (ss_B^gamma)*(1-b_A) )
-    return(p_A)
-  }
+  ss_A <- sum(purrr::map_dbl(1:n_exemplars,~similarity(c, w, test, A_exemplars[.x,], r)))
+  ss_B <- sum(purrr::map_dbl(1:n_exemplars,~similarity(c, w, test, B_exemplars[.x,], r)))
+  p_A <- (ss_A^gamma)*b_A / ( (ss_A^gamma)*b_A + (ss_B^gamma)*(1-b_A) )
+  return(unname(p_A))
+  # if(return_SS){
+  #   return(c("A"=ss_A,"B"=ss_B))
+  # }else{
+  #   
+  # }
 }
 
 gcm_lik <- function(dat, test, params, r, A_exemplars, B_exemplars, do_nllik=T){
@@ -66,16 +46,24 @@ gcm_kl <- function(N, test, r, A_exemplars, B_exemplars, params_1, params_0,debu
   p1 <- p0 <- kl <- numeric(n_stim)
   # browser()
   for(i in 1:n_stim){
-    p1[i] <- gcm_predict(test[i,],params_1,r,A_exemplars,B_exemplars)
-    p0[i] <- gcm_predict(test[i,],params_0,r,A_exemplars,B_exemplars)
+    # print("=====")
+    # print(unname(test[i,]))
+    p1[i] <- gcm_predict(test=test[i,],params=params_1,r=r,A_exemplars=A_exemplars,B_exemplars=B_exemplars)
+    p0[i] <- gcm_predict(test=test[i,],params=params_0,r=r,A_exemplars=A_exemplars,B_exemplars=B_exemplars)
+    # print("p1")
+    # print(p1[i])
+    # print("p0")
+    # print(p0[i])
     kl[i] <- kl_binomial(n=N,p1=p1[i],p0=p0[i])
+    # print("kl")
+    # print(kl[i])
   }
   if(debug){
     if(any(kl==0)){
       browser()
     }
   }
+  # browser()
   kl_all <- exp(sum(log(kl)))
-  print(kl_all)
   return(kl_all)
 }

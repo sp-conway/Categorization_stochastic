@@ -88,12 +88,12 @@ params <- c("c"=c,
             "w"=w,
             "b_A"=b_A,
             "gamma"=gamma)
-for(i in 1:n_test){
-  ss[i,] <- gcm_predict(test_stim[i,], params, r, A_exemplars, B_exemplars, T)
-  p[i,] <- gcm_predict(test_stim[i,], params, r, A_exemplars, B_exemplars, F)
-}
-ss
-p
+# for(i in 1:n_test){
+#   ss[i,] <- gcm_predict(test_stim[i,], params, r, A_exemplars, B_exemplars, T)
+#   p[i,] <- gcm_predict(test_stim[i,], params, r, A_exemplars, B_exemplars, F)
+# }
+# ss
+# p
 # write categories to file ============================================================
 mds_cat_with_orig <- mds_cat %>% # join to physical stimulus values
   rename(angle_psy=angle,
