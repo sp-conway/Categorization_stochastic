@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """
 This experiment was created using PsychoPy3 Experiment Builder (v2025.2.3),
-    on Fri Dec 19 16:53:13 2025
+    on Tue Jan  6 11:02:44 2026
 If you publish work using this script the most relevant publication is:
 
     Peirce J, Gray JR, Simpson S, MacAskill M, Höchenberger R, Sogo H, Kastman E, Lindeløv JK. (2019) 
@@ -205,7 +205,7 @@ def setupWindow(expInfo=None, win=None):
             monitor='testMonitor', color=[0,0,0], colorSpace='rgb',
             backgroundImage='', backgroundFit='none',
             blendMode='avg', useFBO=True,
-            units='height',
+            units='pix',
             checkTiming=False  # we're going to do this ourselves in a moment
         )
     else:
@@ -214,7 +214,7 @@ def setupWindow(expInfo=None, win=None):
         win.colorSpace = 'rgb'
         win.backgroundImage = ''
         win.backgroundFit = 'none'
-        win.units = 'height'
+        win.units = 'pix'
     if expInfo is not None:
         # get/measure frame rate if not already in expInfo
         if win._monitorFrameRate is None:
@@ -385,6 +385,13 @@ def run(expInfo, thisExp, win, globalClock=None, thisSession=None):
     
     # --- Initialize components for Routine "trial_2" ---
     key_resp = keyboard.Keyboard(deviceName='defaultKeyboard')
+    turtle_1 = visual.ShapeStim(
+        win=win, name='turtle_1',
+        size=(0.5, 0.5), vertices='triangle',
+        ori=0.0, pos=(0, 0), draggable=False, anchor='center',
+        lineWidth=1.0,
+        colorSpace='rgb', lineColor=(-1.0000, -1.0000, 0.0039), fillColor=(0.7412, 0.4431, 0.0588),
+        opacity=1.0, depth=-2.0, interpolate=True)
     
     # create some handy timers
     
@@ -420,15 +427,31 @@ def run(expInfo, thisExp, win, globalClock=None, thisSession=None):
     # create an object to store info about Routine trial_2
     trial_2 = data.Routine(
         name='trial_2',
-        components=[key_resp],
+        components=[key_resp, turtle_1],
     )
     trial_2.status = NOT_STARTED
     continueRoutine = True
     # update component parameters for each repeat
+    # Run 'Begin Routine' code from draw_turtle
+    import numpy as np
+    radius=10
+    def get_turtle_vertices(radius):
+        n_points = 100
+        angles = np.linspace(0, np.pi, n_points)
+        arc_x = radius*np.cos(angles)
+        arc_y = radius*np.sin(angles)
+        verts=np.column_stack([arc_x,arc_y])
+        verts=np.vstack(([-radius,0],
+                         verts,
+                         [radius,0]))
+        return verts
+    turtle_verts = get_turtle_vertices(radius)
+    print(turtle_verts)
     # create starting attributes for key_resp
     key_resp.keys = []
     key_resp.rt = []
     _key_resp_allKeys = []
+    turtle_1.setVertices(turtle_verts)
     # store start times for trial_2
     trial_2.tStartRefresh = win.getFutureFlipTime(clock=globalClock)
     trial_2.tStart = globalClock.getTime(format='float')
@@ -460,29 +483,53 @@ def run(expInfo, thisExp, win, globalClock=None, thisSession=None):
         frameN = frameN + 1  # number of completed frames (so 0 is the first frame)
         # update/draw components on each frame
         # Run 'Each Frame' code from draw_turtle
-        turtle_green = visual.Pie(
-            win,
-            fillColor=[0, 128, 0],
-            colorSpace='rgb255',
-            start=0,
-            end=90,
-            radius=100,
-            pos=(0,200)
-        )
-        turtle_yellow = visual.Pie(
-            win,
-            fillColor=[255, 192, 0],
-            lineColor=[255, 192, 0],
-            colorSpace='rgb255',
-            start=0,
-            end=90,
-            radius=200,
-            pos=(0,200)
-        )
-        )
-        turtle_green.draw()
+        #turtle_green = visual.Pie(
+        #    win,
+        #    fillColor=[0, 128, 0],
+        #    colorSpace='rgb255',
+        #    start=0,
+        #    end=90,
+        #    radius=100,
+        #    pos=(0,200)
+        #)
+        #turtle_yellow = visual.Pie(
+        #    win,
+        #    fillColor=[255, 192, 0],
+        #    lineColor=[255, 192, 0],
+        #    colorSpace='rgb255',
+        #    start=0,
+        #    end=90,
+        #    radius=200,
+        #    pos=(0,200)
+        #)
+        #
+        #turtle_yellow = visual.Pie(
+        #    win=win,
+        #    fillColor=[0, 0, 0],
+        #    lineColor=[-1, -1, -1],
+        #    start=0,
+        #    end=90,
+        #    radius=200,
+        #    pos=(0,200)
+        #)
+        #
+        #turtle_green.draw()
         #turtle_yellow.draw()
-        win.flip()
+        #win.flip()
+        #
+        #circle = visual.Circle(
+        #    win=win,
+        #    units="pix",
+        #    radius=150,
+        #    fillColor=[0, 0, 0],
+        #    lineColor=[-1, -1, -1]
+        #)
+        #
+        #circle.draw()
+        
+        #win.flip()
+        
+        
         
         # *key_resp* updates
         waitOnFlip = False
@@ -511,6 +558,26 @@ def run(expInfo, thisExp, win, globalClock=None, thisSession=None):
                 key_resp.duration = _key_resp_allKeys[-1].duration
                 # a response ends the routine
                 continueRoutine = False
+        
+        # *turtle_1* updates
+        
+        # if turtle_1 is starting this frame...
+        if turtle_1.status == NOT_STARTED and tThisFlip >= 0.0-frameTolerance:
+            # keep track of start time/frame for later
+            turtle_1.frameNStart = frameN  # exact frame index
+            turtle_1.tStart = t  # local t and not account for scr refresh
+            turtle_1.tStartRefresh = tThisFlipGlobal  # on global time
+            win.timeOnFlip(turtle_1, 'tStartRefresh')  # time at next scr refresh
+            # add timestamp to datafile
+            thisExp.timestampOnFlip(win, 'turtle_1.started')
+            # update status
+            turtle_1.status = STARTED
+            turtle_1.setAutoDraw(True)
+        
+        # if turtle_1 is active this frame...
+        if turtle_1.status == STARTED:
+            # update params
+            pass
         
         # check for quit (typically the Esc key)
         if defaultKeyboard.getKeys(keyList=["escape"]):
