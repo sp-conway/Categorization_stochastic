@@ -1,0 +1,364 @@
+%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Analysis 1: Effect of changing the Simuli on GCM Fits
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+load Kruschke_X_1992.mat;
+
+%Define function stem
+model = 'GCM_3p';
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Sampling distribution Validation
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%Define Parameter Properties
+%w = wight on the height attribute
+%c = perceptual sensitivity
+%gamma = choice sensitivity
+% theta =   [w, c, gamma]
+theta_0 =   [.5 1 1];       %True Parameters
+theta_min = [0.01; 0.01; 0.01];   %Minimal Values
+theta_max = [1; 2; 2];         %Maximal Values
+
+%Define resultion of KL surface as number of numerical estimates
+grain = 50;
+
+%Simulation Control Variables
+N_est = 5000;   %Number of Estimates
+numsamp = 1000;  %Montecarlo sample to search for minimum to use as starting point for fminsearch
+replicate = 3;   %Rerun estimation
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Cond = 3;
+
+%Find Condition Data Location
+Index = C_S(:,1) == Cond;
+%Extract Data From Given Condition
+X3 = X(Index,:);
+
+%Generate KL Sampling Distribution
+[KL_pdf3] = KL_Samp_Binom_V1(model,X3,theta_0,theta_min,theta_max,grain); %External Function Call
+
+%Summarize Results
+[Emp_pdf_EV3, Emp_pdf_var3, Emp_pdf_Spearman3, Emp_pdf_Sch_Wolf3] = Num_pdf_Summary(theta_min,theta_max,grain,Emp_pdf3);  %External Function Call
+[KL_pdf_EV3, KL_pdf_var3, KL_pdf_Spearman3, KL_pdf_Sch_Wolf3] = Num_pdf_Summary(theta_min,theta_max,grain,KL_pdf3,1);  %External Function Call
+
+
+
+%Compute Empirical Distibution of Parameters
+tic
+[HAT3] = Emp_Sim_Gen_V1(model, theta_0, (theta_min)', (theta_max)', N_est, numsamp, replicate, X3); %External Function Call
+toc
+
+%Generate smoothed empirical distribution from HAT estimates
+[Emp_pdf3] = HAT_2_Emp_pdf(theta_min,theta_max,grain,HAT3);  %External Function Call
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Cond = 1;
+
+%Find Condition Data Location
+Index = C_S(:,1) == Cond;
+%Extract Data From Given Condition
+X1 = X(Index,:);
+
+%Generate KL Sampling Distribution
+[KL_pdf1] = KL_Samp_Binom_V1(model,X1,theta_0,theta_min,theta_max,grain);  %External Function Call
+
+%Compute Empirical Distibution of Parameters
+tic
+[HAT1] = Emp_Sim_Gen_V1(model, theta_0, (theta_min)', (theta_max)', N_est, numsamp, replicate, X1);  %External Function Call
+toc
+
+%Generate smoothed empirical distribution from HAT estimates
+[Emp_pdf1] = HAT_2_Emp_pdf(theta_min,theta_max,grain,HAT1);  %External Function Call
+
+%Summarize Results
+[Emp_pdf_EV1, Emp_pdf_var1, Emp_pdf_Spearman1, Emp_pdf_Sch_Wolf1] = Num_pdf_Summary(theta_min,theta_max,grain,Emp_pdf1);  %External Function Call
+[KL_pdf_EV1, KL_pdf_var1, KL_pdf_Spearman1, KL_pdf_Sch_Wolf1] = Num_pdf_Summary(theta_min,theta_max,grain,KL_pdf1,1);  %External Function Call
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Cond = 2;
+
+%Find Condition Data Location
+Index = C_S(:,1) == Cond;
+%Extract Data From Given Condition
+X2 = X(Index,:);
+
+%Generate KL Sampling Distribution
+[KL_pdf2] = KL_Samp_Binom_V1(model,X2,theta_0,theta_min,theta_max,grain); %External Function Call
+
+%Compute Empirical Distibution of Parameters
+tic
+[HAT2] = Emp_Sim_Gen_V1(model, theta_0, (theta_min)', (theta_max)', N_est, numsamp, replicate, X2); %External Function Call
+toc
+
+%Generate smoothed empirical distribution from HAT estimates
+[Emp_pdf2] = HAT_2_Emp_pdf(theta_min,theta_max,grain,HAT2);  %External Function Call
+
+%Summarize Results
+[Emp_pdf_EV2, Emp_pdf_var2, Emp_pdf_Spearman2, Emp_pdf_Sch_Wolf2] = Num_pdf_Summary(theta_min,theta_max,grain,Emp_pdf2);  %External Function Call
+[KL_pdf_EV2, KL_pdf_var2, KL_pdf_Spearman2, KL_pdf_Sch_Wolf2] = Num_pdf_Summary(theta_min,theta_max,grain,KL_pdf2,1);  %External Function Call
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Cond = 3;
+
+%Find Condition Data Location
+Index = C_S(:,1) == Cond;
+%Extract Data From Given Condition
+X3 = X(Index,:);
+
+%Generate KL Sampling Distribution
+[KL_pdf3] = KL_Samp_Binom_V1(model,X3,theta_0,theta_min,theta_max,grain); %External Function Call
+
+%Compute Empirical Distibution of Parameters
+tic
+[HAT3] = Emp_Sim_Gen_V1(model, theta_0, (theta_min)', (theta_max)', N_est, numsamp, replicate, X3); %External Function Call
+toc
+
+%Generate smoothed empirical distribution from HAT estimates
+[Emp_pdf3] = HAT_2_Emp_pdf(theta_min,theta_max,grain,HAT3);  %External Function Call
+
+%Summarize Results
+[Emp_pdf_EV3, Emp_pdf_var3, Emp_pdf_Spearman3, Emp_pdf_Sch_Wolf3] = Num_pdf_Summary(theta_min,theta_max,grain,Emp_pdf3);  %External Function Call
+[KL_pdf_EV3, KL_pdf_var3, KL_pdf_Spearman3, KL_pdf_Sch_Wolf3] = Num_pdf_Summary(theta_min,theta_max,grain,KL_pdf3,1);  %External Function Call
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Cond = 4;
+
+%Find Condition Data Location
+Index = C_S(:,1) == Cond;
+%Extract Data From Given Condition
+X4 = X(Index,:);
+
+%Generate KL Sampling Distribution
+[KL_pdf4] = KL_Samp_Binom_V1(model,X4,theta_0,theta_min,theta_max,grain); %External Function Call
+
+%Compute Empirical Distibution of Parameters
+tic
+[HAT4] = Emp_Sim_Gen_V1(model, theta_0, (theta_min)', (theta_max)', N_est, numsamp, replicate, X4); %External Function Call
+toc
+
+%Generate smoothed empirical distribution from HAT estimates
+[Emp_pdf4] = HAT_2_Emp_pdf(theta_min,theta_max,grain,HAT4);  %External Function Call
+
+%Summarize Results
+[Emp_pdf_EV4, Emp_pdf_var4, Emp_pdf_Spearman4, Emp_pdf_Sch_Wolf4] = Num_pdf_Summary(theta_min,theta_max,grain,Emp_pdf4);  %External Function Call
+[KL_pdf_EV4, KL_pdf_var4, KL_pdf_Spearman4, KL_pdf_Sch_Wolf4] = Num_pdf_Summary(theta_min,theta_max,grain,KL_pdf4);  %External Function Call
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%Results from 4 Conditions
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%Plot KL distribution
+Theta_1 = cell2mat(arrayfun(@(x_min,x_max) linspace(x_min,x_max,grain),theta_min,theta_max,'UniformOutput',false));
+%Plot Conditions
+[Xg,Yg] = meshgrid(Theta_1(1,:),Theta_1(2,:));
+figure;
+subplot(2,2,1); h = pcolor(Yg,Xg,KL_pdf1');
+set(h, 'EdgeColor', 'none');
+xlabel('c');
+ylabel('w');
+title(['Cond 1 w=' num2str(theta_0(1)) ', c=' num2str(theta_0(2)) ': p_{KL} for w and c'])
+
+subplot(2,2,2); h = pcolor(Yg,Xg,KL_pdf2');
+set(h, 'EdgeColor', 'none');
+xlabel('c');
+ylabel('w');
+title(['Cond 2: p_{KL} for w and c'])
+
+subplot(2,2,3); h = pcolor(Yg,Xg,KL_pdf3');
+set(h, 'EdgeColor', 'none');
+xlabel('c');
+ylabel('w');
+title(['Cond 3: p_{KL} for w and c'])
+
+subplot(2,2,4); h = pcolor(Yg,Xg,KL_pdf4');
+set(h, 'EdgeColor', 'none');
+xlabel('c');
+ylabel('w');
+title(['Cond 4: p_{KL} for w and c'])
+
+%Plot Emp distribution
+%Plot Conditions
+[Xg,Yg] = meshgrid(Theta_1(1,:),Theta_1(2,:));
+figure;
+subplot(2,2,1); h = pcolor(Yg,Xg,Emp_pdf1');
+set(h, 'EdgeColor', 'none');
+xlabel('c');
+ylabel('w');
+title(['Cond 1 w=' num2str(theta_0(1)) ', c=' num2str(theta_0(2)) ': p_{Emp} for w and c'])
+
+subplot(2,2,2); h = pcolor(Yg,Xg,Emp_pdf2');
+set(h, 'EdgeColor', 'none');
+xlabel('c');
+ylabel('w');
+title(['Cond 2: p_{Emp} for w and c'])
+
+subplot(2,2,3); h = pcolor(Yg,Xg,Emp_pdf3');
+set(h, 'EdgeColor', 'none');
+xlabel('c');
+ylabel('w');
+title(['Cond 3: p_{Emp} for w and c'])
+
+subplot(2,2,4); h = pcolor(Yg,Xg,Emp_pdf4');
+set(h, 'EdgeColor', 'none');
+xlabel('c');
+ylabel('w');
+title(['Cond 4: p_{Emp} for w and c'])
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Parameter Space Sensitivity Analysis
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+theta_min = [0.01; 0.01];   %Minimal Values
+theta_max = [1; 2];         %Maximal Values
+
+%Define resultion of KL surface as number of numerical estimates
+grain = 40;
+
+w = linspace(.2,.8,grain);
+c = linspace(.2,1.8,grain);
+
+Cond = 1;
+%Find Condition Data Location
+Index = C_S(:,1) == Cond;
+%Extract Data From Given Condition
+X1 = X(Index,:);
+
+Theta_0 = [w;c];
+tic
+[EV_p1_C1,EV_p2_C1,Var_p1_C1,Var_p2_C1,Sp_p12_C1,Dep_p12_C1] = Param_Space_Summary_2p(model,X1,Theta_0,theta_min,theta_max,grain); %External Function Call
+toc
+
+Cond = 3;
+%Find Condition Data Location
+Index = C_S(:,1) == Cond;
+%Extract Data From Given Condition
+X3 = X(Index,:);
+
+%Perform Sensitivity Analysis
+Theta_0 = [w;c];
+tic
+[EV_p1_C3,EV_p2_C3,Var_p1_C3,Var_p2_C3,Sp_p12_C3,Dep_p12_C3] = Param_Space_Summary_2p(model,X3,Theta_0,theta_min,theta_max,grain); %External Function Call
+toc
+
+[Xg,Yg] = meshgrid(Theta_0(2,:),Theta_0(1,:));
+
+figure;
+subplot(1,2,1);
+h = pcolor(Xg,Yg,Sp_p12_C1);
+set(h, 'EdgeColor', 'none');
+xlabel('True P2');
+ylabel('True P1');
+title(["Condition 1"])
+caxis([-.6 .61]);
+
+subplot(1,2,2);
+h = pcolor(Xg,Yg,Sp_p12_C3);
+colorbar;
+set(h, 'EdgeColor', 'none');
+xlabel('True P2');
+ylabel('True P1');
+title(["Condition 3"])
+caxis([-.6 .61]);
+
+%Visualize Bias, Variance, Association, and Dependence for each Condition
+%Condition 1
+Param_Space_Plotter(EV_p1_C1,EV_p2_C1,Var_p1_C1,Var_p2_C1,Sp_p12_C1,Dep_p12_C1,Theta_0) %External Function Call
+%Condition 3
+Param_Space_Plotter(EV_p1_C3,EV_p2_C3,Var_p1_C3,Var_p2_C3,Sp_p12_C3,Dep_p12_C3,Theta_0) %External Function Call
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Individual Difference Generalizability Across Conditions
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%Define Parameter Properties
+%w = wight on the height attribute
+%c = choice sensitivity
+% theta =   [w, c]
+theta_0 =   [.5 1];       %True Parameters
+theta_min = [0.01; 0.01];   %Minimal Values
+theta_max = [1; 2];         %Maximal Values
+
+% High c and w
+theta_1 =   [.75 1.5];
+% High c and low w
+theta_2 =   [.25 1.5];
+% Low c
+theta_3 =   [.5 .5];
+
+%Define resultion of KL surface as number of numerical estimates
+grain = 50;
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+power_all = [];
+for Cond = [1, 2, 3, 4]
+    %Find Condition Data Location
+    Index = C_S(:,1) == Cond;
+    %Extract Data From Given Condition
+    X1 = X(Index,:);
+
+    %Generate KL Sampling Distribution
+    [KL_pdf1] = KL_Samp_Binom_V1(model,X1,theta_1,theta_min,theta_max,grain);  %External Function Call
+    [KL_pdf2] = KL_Samp_Binom_V1(model,X1,theta_2,theta_min,theta_max,grain);  %External Function Call
+    [KL_pdf3] = KL_Samp_Binom_V1(model,X1,theta_3,theta_min,theta_max,grain);  %External Function Call
+
+    %Define Critial Region of estimate as or more extreme
+    alpha = 0.05;
+
+    % Step 1: Flatten
+    null_flat_1 = KL_pdf1(:);
+    null_flat_2 = KL_pdf2(:);
+    null_flat_3 = KL_pdf3(:);
+
+    % Step 2: Sort null in descending order
+    [sorted_null1, idx1] = sort(null_flat_1, 'ascend');
+    [sorted_null2, idx2] = sort(null_flat_2, 'ascend');
+    [sorted_null3, idx3] = sort(null_flat_3, 'ascend');
+
+    % Step 3: Find cutoff index for alpha
+    cum_null1 = cumsum(sorted_null1);
+    cum_null2 = cumsum(sorted_null2);
+    cum_null3 = cumsum(sorted_null3);
+
+    crit_idx1 = find(cum_null1 >= alpha, 1);
+    crit_idx2 = find(cum_null2 >= alpha, 1);
+    crit_idx3 = find(cum_null3 >= alpha, 1);
+
+    alpha_cut1 = sorted_null1(crit_idx1);
+    alpha_cut2 = sorted_null2(crit_idx2);
+    alpha_cut3 = sorted_null3(crit_idx3);
+
+    KL_pdf1_crit = KL_pdf1<=alpha_cut1;
+    KL_pdf2_crit = KL_pdf2<=alpha_cut2;
+    KL_pdf3_crit = KL_pdf3<=alpha_cut3;
+
+    sum(sum(KL_pdf1.*KL_pdf1_crit))
+    sum(sum(KL_pdf2.*KL_pdf2_crit))
+    sum(sum(KL_pdf3.*KL_pdf3_crit))
+
+    % Step 4: Sum alt probs in critical region, First number is h0, second
+    % number h1.
+    power_12 = sum(sum(KL_pdf2.*KL_pdf1_crit));
+    power_13 = sum(sum(KL_pdf3.*KL_pdf1_crit));
+    power_21 = sum(sum(KL_pdf1.*KL_pdf2_crit));
+    power_23 = sum(sum(KL_pdf3.*KL_pdf2_crit));
+    power_31 = sum(sum(KL_pdf1.*KL_pdf3_crit));
+    power_32 = sum(sum(KL_pdf2.*KL_pdf3_crit));
+
+    power_all  = [power_all ; [power_12, power_13, power_21, power_23, power_31, power_32]];
+end
