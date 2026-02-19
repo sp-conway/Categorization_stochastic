@@ -10,7 +10,7 @@ library(akima)
 
 # gcm functions
 source(here("kl_analyses","gcm_functions.R"))
-source(here("kl_analyses","kl_functions.R"))
+source(here("kl_analyses","kl_functions_split_gamma.R"))
 
 # read in stimuli
 mds_cat <- here("kl_analyses/mds_turtles_categories_25_11/mds_orig_turtles_cat.csv") %>%
